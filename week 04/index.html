@@ -1,74 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAYOUT IN CSS</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Student Grade Calculator</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <h1>Student Grade Calculator</h1>
+        </header>
+        <main>
+            <div class="container">
+                <input type="number" id="scoreInput" placeholder="Enter your grade">
+                <button id="calcBtn">Calculate Grade</button>
+            </div>
+            <br>
+            <div id="result"></div>
+        </main>
+        <footer>
+        <p>Group 15 2026&copy;</p>
 
-<body>
-
-<header>
-    <nav>
-        <a href="#b1">BOX ONE</a>
-        <a href="#b2">BOX TWO</a>
-        <a href="#b3">BOX THREE</a>
-        <a href="#b4">THE NEW BOX</a>
-    </nav>
-</header>
-
-<h1>LAYOUT IN CSS</h1>
-
-<section class="container">
-
-
-    <aside class="sidebar">
-        <ul>
-            <li>BOX ONE</li>
-            <li>BOX TWO</li>
-            <li>BOX THREE</li>
-            <li>THE NEW BOX</li>
-        </ul>
-    </aside>
-
-
-    <main class="main-content">
-
-        <h1>This is our section</h1>
-
-        <div class="box1" id="b1">
-            <h2>BOX ONE</h2>
-            <p>This is an introductory box, that explains everything concerning web development.</p>
-        </div>
-
-        <div class="box2" id="b2">
-            <h2>BOX TWO</h2>
-            <p>This part elaborates the features and components of web development.</p>
-        </div>
-
-        <div class="box3" id="b3">
-            <h2>BOX THREE</h2>
-            <p>In this box we get to know the advantages of web development.</p>
-        </div>
-
-        <div class="box4" id="b4">
-            <h2>THE NEW BOX</h2>
-            <p>My names are Kirua Ifuenza, studying ISM year 2 at Ardhi University.</p>
-
-            <label>
-                <b>New box:</b>
-                <input type="text" name="new">
-            </label>
-        </div>
-
-    </main>
-
-</section>
-
-<footer>
-    <p>Copyright &copy; 2026</p>
-</footer>
-
-</body>
+        </footer>
+    </body>
 </html>
