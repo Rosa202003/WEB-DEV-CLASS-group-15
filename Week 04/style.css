@@ -1,0 +1,35 @@
+body{
+    background-color: blueviolet;
+    color:orange;
+    font-size: 1.5rem;
+    font-family: Perpetua, Helvetica, sans-serif;
+    text-align: center;
+}
+.container{
+    width: 100%;
+    height: 25vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightblue;
+    border-radius: 10px;
+}
+
+#result{
+    width: 100%;
+    height:9vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgreen;
+    border-radius: 10px;
+}
+
+header{
+    background-color: blanchedalmond;
+    background-attachment: fixed;
+}
+
+footer {
+    background-color: cyan;
+}
