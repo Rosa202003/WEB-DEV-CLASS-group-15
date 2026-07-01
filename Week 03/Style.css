@@ -1,0 +1,35 @@
+body {
+    background-color: aqua;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+}
+.Skills_section {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid rgb(84, 15, 222);
+    border-radius: 10px;
+}
+.Routine_section {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid rgb(15, 222, 81);
+    border-radius: 10px;
+}
+#About {
+    background-color: rgb(255, 0, 0);
+    color: rgb(144, 29, 238);
+    text-align: center;
+    padding: 20px;
+    font-size: 40px;
+}
+h3,h4 {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+Ul li {
+    list-style-type: square;
+}
+a:link{
+    color: rgb(211, 141, 11);
+    text-decoration: none;
+}

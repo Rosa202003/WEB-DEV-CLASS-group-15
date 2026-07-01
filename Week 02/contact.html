@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timetable</title>
+ <a href="index.html" >HOME</a>
+<a href="timetable.html" >TIMETABLE</a>
+<a href="contact.html" >CONTACT </a> 
+</head>
+<body>
+    <h1>My Contact Information</h1>
+    <h2>Basic Contact Form</h2>
+    <form action=""/action_page.php"" method="post">
+        <!--form fields-->
+        <label><b>Student Full Name:</b></label>
+        <br>
+        <input type="text" name="Name" placeholder="Enter your Full Name">
+    <br>
+    
+    <label><b>Student Email:</b></label>
+        <br>
+            <input type="email" name="Email" placeholder="Enter your email">
+            <br>
+            <label><b>Write Your Message:</b></label>
+            <br>
+            <textarea name="Message" cols="30" rows="1" placeholder="Type in your message...."></textarea>
+            <br>
+            <input type="submit" value="Submit Form">
+    </form>
+<br>
+<br>
+<table border="1">
+    <form action=""/action_page.php"" method="post">
+        <th align="center">STUDENT REGISTRATION FORM</th>
+        <tr>
+            <td>Student Full Name:</td>
+            <td><input type="text" name="Name" placeholder="Enter your Full Name"></td>
+        </tr>
+        <tr>
+            <td>Student Email:</td>
+            <td><input type="email" name="Email" placeholder="Enter your email"></td>
+        </tr>
+        <tr><td>Your Password</td>
+            <td><input type="password" name="Password" placeholder="Enter your password"></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="Gender" value="Male"> Male
+            <br>
+            <input type="radio" name="Gender" value="Female">
+        Female</td>
+        </tr>
+
+       <tr> <td><input type="checkbox" name="Courses" placeholder="Choose all relevant Courses">
+        HTML
+            <br>
+        <input type="checkbox" name="Courses" placeholder="Choose all relevant Courses">
+        CSS
+        <br>
+        <input type="checkbox" name="Courses" placeholder="Choose all relevant Courses">
+        JavaScript
+        <br>
+        </td>
+    </tr>
+    <br>
+    
+    </form>
+</table>
+<input type="submit" value="Submit">
+</body>
