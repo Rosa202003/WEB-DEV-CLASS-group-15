@@ -1,0 +1,503 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}Dashboard - Complaint Management System{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-5 mb-2">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </h1>
+                        <p class="mb-0">
+                            <i class="fas fa-user-circle me-2"></i>
+                            Welcome back, {{ user.get_full_name|default:user.username }}!
+                            {% if user.profile.is_staff_member %}
+                                <span class="badge bg-light text-dark ms-2">
+                                    <i class="fas fa-user-tie me-1"></i>Staff Member
+                                </span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="d-none d-md-block">
+                        <i class="fas fa-ticket-alt fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Total Complaints</p>
+                    <h3 class="mb-0">{{ total_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-primary">
+                    <i class="fas fa-ticket-alt text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-clock me-1"></i>
+                    All time complaints
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Pending</p>
+                    <h3 class="mb-0 text-warning">{{ pending_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-warning">
+                    <i class="fas fa-clock text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-hourglass-half me-1"></i>
+                    Awaiting response
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">In Progress</p>
+                    <h3 class="mb-0 text-info">{{ in_progress_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-info">
+                    <i class="fas fa-spinner text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-cog me-1"></i>
+                    Being worked on
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Resolved</p>
+                    <h3 class="mb-0 text-success">{{ resolved_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-success">
+                    <i class="fas fa-check-circle text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-check me-1"></i>
+                    Completed successfully
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="row">
+    <!-- Left Column - Recent Complaints -->
+    <div class="col-lg-7 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Complaints
+                </h5>
+                <div>
+                    <a href="{% url 'complaints:complaint_list' %}" class="btn btn-sm btn-outline-primary">
+                        View All <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if recent_complaints %}
+                    <div class="list-group list-group-flush">
+                        {% for complaint in recent_complaints %}
+                            <a href="{% url 'complaints:complaint_detail' complaint.id %}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="flex-grow-1 me-3">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <strong>{{ complaint.title }}</strong>
+                                            <span class="badge badge-status badge-{{ complaint.status }} ms-2">
+                                                {{ complaint.get_status_display }}
+                                            </span>
+                                            <span class="badge bg-secondary ms-1">
+                                                {{ complaint.get_priority_display }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt me-1"></i>
+                                                {{ complaint.created_at|date:"M d, Y" }}
+                                                {% if complaint.department %}
+                                                    <span class="mx-1">•</span>
+                                                    <i class="fas fa-building me-1"></i>
+                                                    {{ complaint.department.name }}
+                                                {% endif %}
+                                                {% if complaint.assigned_to %}
+                                                    <span class="mx-1">•</span>
+                                                    <i class="fas fa-user-check me-1"></i>
+                                                    {{ complaint.assigned_to.username }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted d-block">
+                                            {{ complaint.created_at|timesince }} ago
+                                        </small>
+                                        <i class="fas fa-chevron-right text-muted"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
+                        <h5>No complaints yet</h5>
+                        <p class="text-muted">Start by creating your first complaint!</p>
+                        <a href="{% url 'complaints:complaint_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Create Complaint
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Quick Actions & Assigned Complaints -->
+    <div class="col-lg-5">
+        <!-- Quick Actions Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="{% url 'complaints:complaint_create' %}" 
+                           class="btn btn-primary w-100 text-start py-3">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            <div>
+                                <small class="d-block fw-bold">New Complaint</small>
+                                <small class="opacity-75">Submit a complaint</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'complaints:complaint_list' %}" 
+                           class="btn btn-outline-primary w-100 text-start py-3">
+                            <i class="fas fa-list me-2"></i>
+                            <div>
+                                <small class="d-block fw-bold">My Complaints</small>
+                                <small class="opacity-75">View all complaints</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'complaints:profile' %}" 
+                           class="btn btn-outline-info w-100 text-start py-3">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <div>
+                                <small class="d-block fw-bold">My Profile</small>
+                                <small class="opacity-75">Update information</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'complaints:logout' %}" 
+                           class="btn btn-outline-danger w-100 text-start py-3">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            <div>
+                                <small class="d-block fw-bold">Logout</small>
+                                <small class="opacity-75">Sign out</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Staff Only Actions -->
+                {% if is_staff %}
+                    <hr>
+                    <h6 class="text-muted mb-2">
+                        <i class="fas fa-user-tie me-2"></i>Staff Actions
+                    </h6>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{% url 'complaints:staff_dashboard' %}" 
+                               class="btn btn-success w-100 text-start py-2">
+                                <i class="fas fa-tasks me-2"></i>
+                                <div>
+                                    <small class="d-block fw-bold">Staff Dashboard</small>
+                                    <small class="opacity-75">Manage complaints</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'complaints:staff_complaint_list' %}" 
+                               class="btn btn-outline-success w-100 text-start py-2">
+                                <i class="fas fa-users me-2"></i>
+                                <div>
+                                    <small class="d-block fw-bold">All Complaints</small>
+                                    <small class="opacity-75">View all users</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Assigned Complaints Card (Staff Only) -->
+        {% if is_staff and assigned_complaints %}
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-check me-2"></i>Assigned to Me
+                    </h5>
+                    <span class="badge bg-primary">{{ assigned_complaints|length }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for complaint in assigned_complaints %}
+                            <a href="{% url 'complaints:staff_complaint_detail' complaint.id %}" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ complaint.title|truncatechars:30 }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar-alt"></i>
+                                            {{ complaint.created_at|date:"M d, Y" }}
+                                        </small>
+                                    </div>
+                                    <span class="badge badge-status badge-{{ complaint.status }}">
+                                        {{ complaint.get_status_display }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- Status Summary Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Status Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span><span class="badge badge-status badge-pending">●</span> Pending</span>
+                    <span class="fw-bold">{{ pending_complaints }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span><span class="badge badge-status badge-in_progress">●</span> In Progress</span>
+                    <span class="fw-bold">{{ in_progress_complaints }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span><span class="badge badge-status badge-resolved">●</span> Resolved</span>
+                    <span class="fw-bold">{{ resolved_complaints }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span><span class="badge badge-status badge-rejected">●</span> Rejected</span>
+                    <span class="fw-bold">{{ rejected_complaints }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Chart (Optional) -->
+{% if total_complaints > 0 %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Complaint Activity
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col">
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-warning" role="progressbar" 
+                                 style="width: {% if total_complaints > 0 %}{% widthratio pending_complaints total_complaints 100 %}{% else %}0{% endif %}%">
+                                Pending: {{ pending_complaints }}
+                            </div>
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {% if total_complaints > 0 %}{% widthratio in_progress_complaints total_complaints 100 %}{% else %}0{% endif %}%">
+                                In Progress: {{ in_progress_complaints }}
+                            </div>
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {% if total_complaints > 0 %}{% widthratio resolved_complaints total_complaints 100 %}{% else %}0{% endif %}%">
+                                Resolved: {{ resolved_complaints }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-2">
+                    <small class="text-muted">
+                        Total: {{ total_complaints }} complaints • 
+                        Last updated: {% now "F d, Y H:i" %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Additional CSS for this template -->
+<style>
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: default;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 12px 0;
+    }
+    
+    .list-group-item:first-child {
+        border-top: none;
+    }
+    
+    .btn {
+        border-radius: 8px;
+    }
+    
+    .btn .opacity-75 {
+        opacity: 0.75;
+    }
+    
+    .progress {
+        border-radius: 15px;
+        background-color: #f0f0f0;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: width 0.6s ease;
+    }
+    
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .badge-pending { 
+        background: #ffc107; 
+        color: #000;
+    }
+    .badge-in_progress { 
+        background: #17a2b8; 
+        color: #fff;
+    }
+    .badge-resolved { 
+        background: #28a745; 
+        color: #fff;
+    }
+    .badge-rejected { 
+        background: #dc3545; 
+        color: #fff;
+    }
+    
+    @media (max-width: 768px) {
+        .stat-card {
+            padding: 15px;
+        }
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        .display-5 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<!-- JavaScript for auto-refresh (optional) -->
+{% block extra_js %}
+<script>
+    // Auto-refresh dashboard every 60 seconds (optional)
+    // Uncomment below to enable auto-refresh
+    /*
+    setTimeout(function() {
+        location.reload();
+    }, 60000);
+    */
+    
+    // Animate progress bars on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

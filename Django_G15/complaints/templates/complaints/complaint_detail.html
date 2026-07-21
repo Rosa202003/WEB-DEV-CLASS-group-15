@@ -1,0 +1,158 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}{{ complaint.title }} - Complaint System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'complaints:dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'complaints:complaint_list' %}">My Complaints</a></li>
+                <li class="breadcrumb-item active">{{ complaint.title|truncatechars:30 }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">{{ complaint.title }}</h4>
+                <div>
+                    <span class="badge badge-status badge-{{ complaint.status }}">
+                        {{ complaint.get_status_display }}
+                    </span>
+                    <span class="badge bg-secondary">{{ complaint.get_priority_display }} Priority</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h6 class="text-muted">Description</h6>
+                    <p>{{ complaint.description|linebreaks }}</p>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Details</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Category:</strong> {{ complaint.category }}</li>
+                            <li><strong>Department:</strong> {{ complaint.department|default:"Not assigned" }}</li>
+                            <li><strong>Created:</strong> {{ complaint.created_at|date:"F d, Y H:i" }}</li>
+                            {% if complaint.resolved_at %}
+                                <li><strong>Resolved:</strong> {{ complaint.resolved_at|date:"F d, Y H:i" }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Assigned To</h6>
+                        {% if complaint.assigned_to %}
+                            <p>{{ complaint.assigned_to.get_full_name|default:complaint.assigned_to.username }}</p>
+                        {% else %}
+                            <p class="text-muted">Not assigned yet</p>
+                        {% endif %}
+                        
+                        {% if complaint.attachment %}
+                            <h6 class="text-muted mt-2">Attachment</h6>
+                            <a href="{{ complaint.attachment.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comments Section -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Comments ({{ comments.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if comments %}
+                    <div class="mb-4">
+                        {% for comment in comments %}
+                            <div class="d-flex mb-3">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" 
+                                         style="width: 40px; height: 40px;">
+                                        {{ comment.user.username|first|upper }}
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>{{ comment.user.get_full_name|default:comment.user.username }}</strong>
+                                        <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-0">{{ comment.comment }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No comments yet.</p>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ comment_form.comment }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-paper-plane me-2"></i>Add Comment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'complaints:complaint_update' complaint.id %}" class="btn btn-warning">
+                        <i class="fas fa-edit me-2"></i>Edit Complaint
+                    </a>
+                    <a href="{% url 'complaints:complaint_delete' complaint.id %}" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Complaint
+                    </a>
+                    <a href="{% url 'complaints:complaint_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History -->
+        {% if complaint.history.all %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>History</h5>
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <ul class="list-unstyled">
+                        {% for history in complaint.history.all|slice:":10" %}
+                            <li class="mb-2">
+                                <small class="text-muted">{{ history.changed_at|date:"M d, Y H:i" }}</small>
+                                <br>
+                                <small>
+                                    <strong>{{ history.changed_by.username }}</strong> changed 
+                                    <strong>{{ history.field_changed }}</strong>
+                                    {% if history.old_value %}
+                                        from "{{ history.old_value }}" 
+                                    {% endif %}
+                                    to "{{ history.new_value }}"
+                                </small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

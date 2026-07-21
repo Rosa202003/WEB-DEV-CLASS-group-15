@@ -1,0 +1,105 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}{{ form_title }} - Complaint System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'complaints:dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'complaints:complaint_list' %}">My Complaints</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ form_title }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">{{ form_title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Title</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="text-danger small">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_category" class="form-label">Category</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_department" class="form-label">Department</label>
+                            {{ form.department }}
+                            {% if form.department.errors %}
+                                <div class="text-danger small">{{ form.department.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_priority" class="form-label">Priority</label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                                <div class="text-danger small">{{ form.priority.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_attachment" class="form-label">Attachment</label>
+                            {{ form.attachment }}
+                            {% if form.attachment.errors %}
+                                <div class="text-danger small">{{ form.attachment.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        {{ form.is_anonymous }}
+                        <label class="form-check-label" for="id_is_anonymous">Submit anonymously</label>
+                        {% if form.is_anonymous.errors %}
+                            <div class="text-danger small">{{ form.is_anonymous.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'complaints:complaint_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-1"></i>Submit Complaint
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'complaints/base.html' %}
+
+{% block title %}Staff Dashboard - Complaint Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="display-5 mb-2">
+                            <i class="fas fa-user-shield me-2"></i>Staff Dashboard
+                        </h1>
+                        <p class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Manage complaints and review team activity.
+                        </p>
+                    </div>
+                    <div class="d-none d-md-block">
+                        <i class="fas fa-clipboard-list fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Total Complaints</p>
+                    <h3 class="mb-0">{{ total_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-success">
+                    <i class="fas fa-ticket-alt text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-chart-line me-1"></i>
+                    Current system total
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Pending</p>
+                    <h3 class="mb-0 text-warning">{{ pending_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-warning">
+                    <i class="fas fa-hourglass-half text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-clock me-1"></i>
+                    Awaiting staff review
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">In Progress</p>
+                    <h3 class="mb-0 text-info">{{ in_progress_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-info">
+                    <i class="fas fa-spinner text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-cogs me-1"></i>
+                    Being handled now
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted mb-1">Resolved</p>
+                    <h3 class="mb-0 text-success">{{ resolved_complaints }}</h3>
+                </div>
+                <div class="icon-circle bg-success">
+                    <i class="fas fa-check-circle text-white"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-check me-1"></i>
+                    Successfully closed
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Priority Mix</h5>
+                        <span class="text-muted">Top priorities</span>
+                    </div>
+                    <div class="card-body">
+                        {% for item in priority_stats %}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ item.label }}</span>
+                                <strong>{{ item.count }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-building me-2"></i>Top Departments</h5>
+                        <span class="text-muted">By complaint volume</span>
+                    </div>
+                    <div class="card-body">
+                        {% if top_departments %}
+                            <ul class="list-unstyled mb-0">
+                                {% for department in top_departments %}
+                                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                        <span>{{ department.name }}</span>
+                                        <span class="badge bg-secondary">{{ department.count }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted mb-0">No department data available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Status Summary</h5>
+                <span class="text-muted">Current distribution</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span><span class="badge badge-status badge-pending">●</span> Pending</span>
+                    <span class="fw-bold">{{ pending_complaints }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span><span class="badge badge-status badge-in_progress">●</span> In Progress</span>
+                    <span class="fw-bold">{{ in_progress_complaints }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span><span class="badge badge-status badge-resolved">●</span> Resolved</span>
+                    <span class="fw-bold">{{ resolved_complaints }}</span>
+                </div>
+                <div class="progress mt-3" style="height: 14px;">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ pending_percent }}%" aria-valuenow="{{ pending_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ in_progress_percent }}%" aria-valuenow="{{ in_progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ resolved_percent }}%" aria-valuenow="{{ resolved_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-calendar-week me-2"></i>Weekly Activity</h5>
+                <span class="text-muted">Last 7 days</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>New complaints this week</span>
+                    <strong>{{ new_this_week }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Overdue open complaints</span>
+                    <strong>{{ overdue_complaints }}</strong>
+                </div>
+                <p class="text-muted small mb-0">Overdue means pending or in progress for more than one week.</p>
+            </div>
+        </div>
+    </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tools me-2"></i>Staff Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-3">
+                    <a href="{% url 'complaints:staff_complaint_list' %}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>Manage All Complaints
+                    </a>
+                    <a href="{% url 'complaints:complaint_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-user me-2"></i>My Assigned Complaints
+                    </a>
+                    <a href="{% url 'complaints:complaint_create' %}" class="btn btn-outline-success">
+                        <i class="fas fa-plus me-2"></i>Register New Complaint
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Goals</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><strong>{{ priority_counts.high|default:0 }}</strong> High-priority complaints</li>
+                    <li class="mb-2"><strong>{{ priority_counts.urgent|default:0 }}</strong> Urgent complaints</li>
+                    <li class="mb-2"><strong>{{ top_departments|length }}</strong> Departments reporting issues</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
